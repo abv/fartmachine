@@ -1,0 +1,57 @@
+<style>
+#hosts {font-size:18px;line-height:20px;height:50px;width:100%}
+#farts div {width:90px;height:90px;float:left;margin:5px 5px 5px 0px;padding:5px;text-align:center;border:1px solid black;font-size:16px;line-height:30px;cursor:pointer;}
+#farts div:hover {background:#EEE;}
+</style>
+<script src="/jquery-2.1.3.min.js"></script>
+<script>
+  $(function(){
+    var audio = false;
+    var update_hosts = function(){
+      $.getJSON('/hosts', function(hosts){
+        $.each(hosts, function(i, host){
+          var percent_complete = ((host.position / host.duration) * 100).toFixed(2);
+          $option = $("#host_"+i);
+          if (!$option.length) {
+            $option = $("<option>").attr('id','host_'+i).attr("value",i).appendTo($("#hosts"));
+          }
+          $option.text(host.name + ' Now Playing [vol: ' + host.volume + '] ' + host.title + ' by ' + host.artist + ' (' + percent_complete + '% played)');
+        });
+        setTimeout(function(){
+          update_hosts();
+        }, 1000);
+      });
+    }
+    update_hosts();
+    $.getJSON('/farts', function(farts){
+      $.each(farts, function(i, fart){
+        var $d = $("<div>").text(fart.title).click(function(){
+          var hosts = $("#hosts").val();
+          if (hosts) {
+            $.each(hosts, function(i, host){
+              $.getJSON('/fart', {mp3: fart.mp3, host: host}, function(){
+                // not doing anything w/ the response right now...
+              });
+            });
+          }
+        }).hover(function(){
+          if (audio) {
+            audio.pause(); 
+          }
+          audio = new Audio(fart.mp3 + '#t=0,5');
+          audio.play();
+        }, function(){
+          if (audio) {
+            audio.pause(); 
+          }
+        });
+        $d.appendTo($("#farts"))
+      });
+    });
+  });
+</script>
+<h1>fartmachine</h1>
+<h2>Select Floor(s)</h2>
+<select multiple id="hosts"></select>
+<h2>Hover to preview in browser. Click to play on selected floor(s)</h2>
+<div id="farts"></div>

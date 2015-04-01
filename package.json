@@ -1,0 +1,8 @@
+{
+  "dependencies" : {
+    "extend" : "*",
+    "async" : "*",
+    "restify" : "*",
+    "sonos" : "git://github.com/abv/node-sonos.git"
+  }
+}
