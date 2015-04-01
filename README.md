@@ -10,3 +10,5 @@ To run
 * Run `node app.js`
 * Visit localhost:8080 in your browser
 * Have fun
+
+![alt tag](https://raw.github.com/abv/fartmachine/master/screenshot.png)
